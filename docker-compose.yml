@@ -1,0 +1,6 @@
+version: "3.7"
+services:
+  post-info:
+    build: ./
+    container_name: post-info
+    restart: unless-stopped
