@@ -3,4 +3,4 @@ services:
   post-info:
     build: ./
     container_name: post-info
-    restart: unless-stopped
+    restart: always

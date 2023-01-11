@@ -1,1 +1,1 @@
-* * * * * python3 /app/main.py >> /app/logfile
+*/30 * * * * python3 /app/main.py >> /app/logfile
