@@ -20,7 +20,7 @@ DOMAIN_SECRET = os.getenv('SECRET')
 DOMAINID = os.getenv('DOMAINID')
 RECORDID = os.getenv('RECORDID')
 
-URL = "https://api.ipify.org/?format=json"
+URL = "https://httpbin.org/ip"
 
 put_domain = {
     "data": "",
@@ -47,19 +47,19 @@ while True:
             print("Could not retrieve public IP")
             break
         data = r.json()
-        put_domain.update({"data": data['ip']})
-        file.write(data['ip'])
+        put_domain.update({"data": data['origin']})
+        file.write(data['origin'])
         file.truncate()
-        if data['ip'] != ip_addr:
+        if data['origin'] != ip_addr:
             print("Updating IP address on domeneshop...")
             try:
                 r = requests.put(f'https://{DOMAIN_TOKEN}:{DOMAIN_SECRET}@api.domeneshop.no/v0/domains/{DOMAINID}/dns/{RECORDID}', data=json.dumps(put_domain))
                 print("Successfully updated IP address!")
-                discordMsg(f'Server IP: {data["ip"]}')
+                discordMsg(f'Server IP: {data["origin"]}')
             except Exception as e:
                 discordMsg('Could not update IP')
                 print("Could not update IP")
                 time.sleep(60*60*24)
                 break
 
-        time.sleep(30)
+        time.sleep(60)
