@@ -1,1 +1,0 @@
-*/30 * * * * python3 /app/main.py >> /app/logfile
