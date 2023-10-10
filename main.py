@@ -36,16 +36,23 @@ def discordMsg(msg=""):
     except Exception as e:
         print("Could not post message to Discord")
 
+
+tries = int
+
 while True:
     with open("ip.txt", "r+") as file:
         ip_addr = file.read()
         file.seek(0)
         try:
             r = requests.get(url=URL)
+            tries = 0
         except Exception as e:
-            discordMsg('Could not retrieve public IP')
-            print("Could not retrieve public IP")
-            break
+            if tries >= 10:
+                discordMsg('Could not retrieve public IP')
+                print("Could not retrieve public IP")
+                time.sleep(60*5)
+            tries += 1
+            continue
         data = r.json()
         put_domain.update({"data": data['origin']})
         file.write(data['origin'])
@@ -53,13 +60,13 @@ while True:
         if data['origin'] != ip_addr:
             print("Updating IP address on domeneshop...")
             try:
-                r = requests.put(f'https://{DOMAIN_TOKEN}:{DOMAIN_SECRET}@api.domeneshop.no/v0/domains/{DOMAINID}/dns/{RECORDID}', data=json.dumps(put_domain))
+                r = requests.put(f'https://{DOMAIN_TOKEN}:{DOMAIN_SECRET}@api.domeneshop.no/v0/domains/{DOMAINID}/dns/{RECORDID}', timeout=10, data=json.dumps(put_domain))
                 print("Successfully updated IP address!")
                 discordMsg(f'Server IP: {data["origin"]}')
             except Exception as e:
                 discordMsg('Could not update IP')
                 print("Could not update IP")
                 time.sleep(60*60*24)
-                break
+                continue
 
         time.sleep(60)
