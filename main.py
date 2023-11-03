@@ -5,7 +5,7 @@ import time
 
 from sys import exit
 from pathlib import Path
-from discord_webhook import DiscordWebhook, DiscordEmbed
+from discord_webhook import DiscordWebhook
 from dotenv import load_dotenv
 
 load_dotenv()
@@ -37,7 +37,7 @@ def discordMsg(msg=""):
         print("Could not post message to Discord")
 
 
-tries = int
+tries = 0
 
 while True:
     with open("ip.txt", "r+") as file:
@@ -61,6 +61,11 @@ while True:
             print("Updating IP address on domeneshop...")
             try:
                 r = requests.put(f'https://{DOMAIN_TOKEN}:{DOMAIN_SECRET}@api.domeneshop.no/v0/domains/{DOMAINID}/dns/{RECORDID}', timeout=10, data=json.dumps(put_domain))
+                if r.status_code != 204:
+                    discordMsg('Could not update IP')
+                    print("Could not update IP")
+                    time.sleep(60*60*24)
+                    continue
                 print("Successfully updated IP address!")
                 discordMsg(f'Server IP: {data["origin"]}')
             except Exception as e:
