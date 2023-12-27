@@ -53,7 +53,12 @@ while True:
                 time.sleep(60*5)
             tries += 1
             continue
-        data = r.json()
+        try:
+            data = r.json()
+        except requests.exceptions as e:
+            print("JSON exception")
+            print("Status code:", r.status_code)
+            print(r.raw)
         put_domain.update({"data": data['origin']})
         file.write(data['origin'])
         file.truncate()
