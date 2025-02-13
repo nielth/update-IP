@@ -29,7 +29,7 @@ put_domain = {
     "type": "A"
 }
 
-def discordMsg(msg=""):
+def discordMsg(msg:str=""):
     webhook = DiscordWebhook(url=WEBHOOK_DISCORD, content=msg)
     try:
         webhook.execute()
